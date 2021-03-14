@@ -7,39 +7,42 @@ void limpa(){
 
 int main()
 {
-    ifstream arquivoEntrada("cep.txt");
-    ofstream arquivoSaida("cep2.txt");
+    ifstream arquivoEntrada("cep.txt");                             //Abre o arquivo para leitura
+    ofstream arquivoSaida("cep2.txt");                              //Abre o arquivo para escrita
 
     string strTemp, inputStringFile;
     string breakString = "\t";
     string substring;
     int delimitadorWhile = 3;
     while(getline (arquivoEntrada, strTemp)){
+        //formatacao da string para escrita no arquivo
         for(int i = 0; i <= delimitadorWhile; i++){
-            int posicaoTabulacao = strTemp.find(breakString);   //Recebe a posicao da tabulacao
-            substring = strTemp.substr(0, posicaoTabulacao);    //
-            strTemp.erase(0, posicaoTabulacao+1);               //Exclui campo + '\t'
+            int posicaoTabulacao = strTemp.find(breakString);       //Recebe a posicao da tabulacao
+            substring = strTemp.substr(0, posicaoTabulacao);
+            strTemp.erase(0, posicaoTabulacao+1);                   //Exclui campo + '\t'
             if(i != 0){
-                inputStringFile.insert(0, "|");                     //Prepara string para arquivo de saida
+                inputStringFile.insert(0, "|");
             }
             inputStringFile.insert(0, substring);
         }
-        arquivoSaida << inputStringFile << endl;
+        arquivoSaida << inputStringFile << endl;                    //Escrita da string no arquivo de saida
         inputStringFile = "";
     }
+    //Fecha arquivos de entrada e saída
     arquivoSaida.close();
+    cout << "Arquivo 1 encerrado com sucesso" << endl;
     arquivoEntrada.close();
-    cout << "Arquivos fechado com sucesso" << endl;
+    cout << "Arquivo 2 encerrado com sucesso" << endl;
 
-    ifstream arquivoEntrada1("cep2.txt");
+    ifstream arquivoEntrada1("cep2.txt");                           //Abre arquivo para leitura
     int opcao, qtdResultados, qtdLinhas;
     string termoBusca, resultado;
     while(1){
         cout << "1 - Busca por Rua\n2 - Busca por Cidade\n3 - Busca por UF\n4 - Busca por CEP\n5 - Sair" << endl;
         cout << "Digite uma opcao: ";
         scanf("%d", &opcao);
-        if(opcao == 5){
-            arquivoEntrada1.close();
+        if(opcao == 5){                                             //Opcao para encerra aplicacao
+            arquivoEntrada1.close();                                //Encerra arquivo de leitura
             cout << "Programa finalizado" << endl;
             break;
         }
