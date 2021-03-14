@@ -40,6 +40,7 @@ int main()
         scanf("%d", &opcao);
         if(opcao == 5){
             arquivoEntrada1.close();
+            cout << "Programa finalizado" << endl;
             break;
         }
         cout << "Qual termo deseja buscar: ";
