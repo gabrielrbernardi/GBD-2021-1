@@ -38,7 +38,7 @@ int main()
     int opcao, qtdResultados, qtdLinhas;
     string termoBusca, resultado;
     while(1){
-        cout << "1 - Busca por Rua\n2 - Busca por Cidade\n3 - Busca por UF\n4 - Busca por CEP\n5 - Sair" << endl;
+        cout << "1 - Busca por Logradouro\n2 - Busca por Cidade\n3 - Busca por UF\n4 - Busca por CEP\n5 - Sair" << endl;
         cout << "Digite uma opcao: ";
         scanf("%d", &opcao);
         if(opcao == 5){                                             //Opcao para encerra aplicacao
@@ -49,10 +49,12 @@ int main()
         cout << "Qual termo deseja buscar: ";
         limpa();                                                    //Limpa o buffer do teclado para a leitura da string de busca
         getline (cin, termoBusca);
-        cout << termoBusca << endl;
         limpa();                                                    //Limpa o buffer do teclado para a leitura da string de busca
 
+        string mensagem = "O tipo de busca escolhida foi: Busca por ";
+
         if(opcao == 1){                                             //Busca por rua
+            mensagem.append("Logradouro");
             qtdResultados = 0;                                      //Variavel para mostrar a quantidade de resultados encontrados
             arquivoEntrada1.clear();                                //Limpa o estado do ifstream antes de chamar a proxima instrucao para leitura do arquivo
             arquivoEntrada1.seekg(0);                               //Posiciona o cursor na primeira linha e primeiro caractere do arquivo
@@ -66,6 +68,7 @@ int main()
                 }
             }
         }else if(opcao == 2){                                       //Busca por cidade
+            mensagem.append("Cidade");
             qtdResultados = 0;                                      //Variavel para mostrar a quantidade de resultados encontrados
             arquivoEntrada1.clear();                                //Limpa o estado do ifstream antes de chamar a proxima instrucao para leitura do arquivo
             arquivoEntrada1.seekg(0);                               //Posiciona o cursor na primeira linha e primeiro caractere do arquivo
@@ -79,6 +82,7 @@ int main()
                 }
             }
         }else if(opcao == 3){                                       //Busca por UF
+            mensagem.append("UF");
             qtdResultados = 0;                                      //Variavel para mostrar a quantidade de resultados encontrados
             arquivoEntrada1.clear();                                //Limpa o estado do ifstream antes de chamar a proxima instrucao para leitura do arquivo
             arquivoEntrada1.seekg(0);                               //Posiciona o cursor na primeira linha e primeiro caractere do arquivo
@@ -93,6 +97,7 @@ int main()
                 }
             }
         }else if(opcao == 4){                                       //Busca por CEP
+            mensagem.append("CEP");
             qtdResultados = 0;                                      //Variavel para mostrar a quantidade de resultados encontrados
             arquivoEntrada1.clear();                                //Limpa o estado do ifstream antes de chamar a proxima instrucao para leitura do arquivo
             arquivoEntrada1.seekg(0);                               //Posiciona o cursor na primeira linha e primeiro caractere do arquivo
@@ -108,8 +113,13 @@ int main()
                 }
             }
         }
-
+        cout << endl << mensagem << endl;
+        cout << "O termo buscado foi: " << termoBusca << endl;
         cout << "Foram lidas " << qtdLinhas << " linhas" << endl;
-        cout << "Foram encontrados " << qtdResultados << " resultados" << endl;
+        if(qtdResultados == 1){
+            cout << "Foi encontrado " << qtdResultados << " resultado" << endl;
+        }else{
+            cout << "Foram encontrados " << qtdResultados << " resultados" << endl;
+        }
     }
 }
