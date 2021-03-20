@@ -15,90 +15,63 @@ struct item{
 
 int main()
 {
-    FILE *arquivoEntrada = fopen("cep.txt", "r");
+    FILE *arquivoEntrada = fopen("cep3.txt", "r");
     FILE *arquivoSaida = fopen("cep2.txt", "w");
 
     string inputStringFile;
     string breakString = "\t";
     string substring;
     struct item item;
-    long long lSize;
-    int qtdLinhas = 0;
+    long lSize;
+    fseek(arquivoEntrada, 0, SEEK_END);
+    lSize = ftell (arquivoEntrada);
+    rewind(arquivoEntrada);
 
-    char c;
-    string teste;
+    char pedro[113];
+    fread(pedro, 1, lSize, arquivoEntrada);
+    cout << pedro << endl;
+
     while(!feof(arquivoEntrada)){
-        while(fread(&c, sizeof(char), 1, arquivoEntrada) == 1 && c != '\n'){
-            teste.push_back(c);
-        };
-        string cep, uf, cidade, logradouro;
-        cep = teste.substr(0, teste.find("\t"));
-        try{
-            item.cep = stoi(cep);
-        }catch(...){
-            cout << "Foram lidas " << qtdLinhas << " linhas" << endl;
-            cout << "Falha na conversao" << endl;
-            return 0;
-        }
-        teste.erase(0, teste.find("\t")+1);
-        uf = teste.substr(0, teste.find("\t"));
-        strcpy(item.uf, uf.c_str());
-        teste.erase(0, teste.find("\t")+1);
-        cidade = teste.substr(0, teste.find("\t"));
-        strcpy(item.cidade, cidade.c_str());
-        teste.erase(0, teste.find("\t")+1);
-        logradouro = teste.substr(0, teste.find("\t"));
-        strcpy(item.logradouro, logradouro.c_str());
-        teste.erase(0, teste.find("\t")+1);
-        qtdLinhas++;
-//        cout << item.cep << endl;
-//        cout << item.uf << endl;
-//        cout << item.cidade << endl;
-//        cout << item.logradouro << endl;
-//        cout << endl;
-        teste.erase(0, teste.size());
+        fread(pedro, 1, lSize, arquivoEntrada);
+        cout << pedro << endl;
     }
-//    while(!feof(arquivoEntrada)){
-//        fread(pedro, 1, lSize, arquivoEntrada);
-//        cout << pedro << endl;
-//    }
 
-//    while(!feof(arquivoEntrada)){
-//        fread(pedro, 1, lSize, arquivoEntrada);
-//        int posicaoTabulacao;
-//        string strTemp(pedro);
-//        posicaoTabulacao = strTemp.find(breakString);           //Recebe a posicao da tabulacao
-//        substring = strTemp.substr(0, posicaoTabulacao);        //Pega o cep
-//        item.cep = stoi(substring);
-//
+    while(!feof(arquivoEntrada)){
+        fread(pedro, 1, lSize, arquivoEntrada);
+        int posicaoTabulacao;
+        string strTemp(pedro);
+        posicaoTabulacao = strTemp.find(breakString);           //Recebe a posicao da tabulacao
+        substring = strTemp.substr(0, posicaoTabulacao);        //Pega o cep
+        item.cep = stoi(substring);
+
+        strTemp.erase(0, posicaoTabulacao+1);                   //Exclui campo + '\t'
+        posicaoTabulacao = strTemp.find(breakString);           //Recebe a posicao da tabulacao
+        substring = strTemp.substr(0, posicaoTabulacao);        //Pega a UF
+        strcpy(item.uf, substring.c_str());
+
+        strTemp.erase(0, posicaoTabulacao+1);                   //Exclui campo + '\t'
+        posicaoTabulacao = strTemp.find(breakString);           //Recebe a posicao da tabulacao
+        substring = strTemp.substr(0, posicaoTabulacao);        //Pega a UF
+        strcpy(item.cidade, substring.c_str());
+
+        strTemp.erase(0, posicaoTabulacao+1);                   //Exclui campo + '\t'
+        posicaoTabulacao = strTemp.find(breakString);           //Recebe a posicao da tabulacao
+        substring = strTemp.substr(0, posicaoTabulacao);        //Pega a UF
+
+        cout << item.cep << endl;
+        cout << item.uf << endl;
+        cout << item.cidade << endl;
+        cout << item.logradouro << endl;
+
+        fwrite(item.uf, 1, sizeof(item.uf), arquivoEntrada);
+
 //        strTemp.erase(0, posicaoTabulacao+1);                   //Exclui campo + '\t'
-//        posicaoTabulacao = strTemp.find(breakString);           //Recebe a posicao da tabulacao
-//        substring = strTemp.substr(0, posicaoTabulacao);        //Pega a UF
-//        strcpy(item.uf, substring.c_str());
-//
-//        strTemp.erase(0, posicaoTabulacao+1);                   //Exclui campo + '\t'
-//        posicaoTabulacao = strTemp.find(breakString);           //Recebe a posicao da tabulacao
-//        substring = strTemp.substr(0, posicaoTabulacao);        //Pega a UF
-//        strcpy(item.cidade, substring.c_str());
-//
-//        strTemp.erase(0, posicaoTabulacao+1);                   //Exclui campo + '\t'
-//        posicaoTabulacao = strTemp.find(breakString);           //Recebe a posicao da tabulacao
-//        substring = strTemp.substr(0, posicaoTabulacao);        //Pega a UF
-//
-//        cout << item.cep << endl;
-//        cout << item.uf << endl;
-//        cout << item.cidade << endl;
-//        cout << item.logradouro << endl;
-//
-//        fwrite(item.uf, 1, sizeof(item.uf), arquivoEntrada);
-//
-////        strTemp.erase(0, posicaoTabulacao+1);                   //Exclui campo + '\t'
-////        inputStringFile.insert(0, substring);
-////        cout << inputStringFile << endl;
-////        arquivoSaida << inputStringFile << endl;                    //Escrita da string no arquivo de saida
-////        inputStringFile = "";
-//    }
-    //Fecha arquivos de entrada e saï¿½da
+//        inputStringFile.insert(0, substring);
+//        cout << inputStringFile << endl;
+//        arquivoSaida << inputStringFile << endl;                    //Escrita da string no arquivo de saida
+//        inputStringFile = "";
+    }
+    //Fecha arquivos de entrada e saída
 //    arquivoSaida.close();
 //    cout << "Arquivo 1 encerrado com sucesso" << endl;
 //    arquivoEntrada.close();
