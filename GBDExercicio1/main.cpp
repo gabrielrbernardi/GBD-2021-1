@@ -8,7 +8,17 @@ void limpa(){
 int main()
 {
     ifstream arquivoEntrada("cep.txt");                             //Abre o arquivo para leitura
-    ofstream arquivoSaida("cep2.txt");                              //Abre o arquivo para escrita
+    ofstream arquivoSaida("cep2.txt");                               //Abre o arquivo para escrita
+
+    if(!arquivoEntrada.is_open()){
+        cout << "Arquivo de entrada não encontrado. Por favor, verifique e tente novamente!" << endl << "Insira um arquivo com nome 'cep.txt'" << endl;
+        return 0;
+    }
+
+    if(!arquivoSaida.is_open()){
+        cout << "Não foi possível abrir o arquivo de saida. Por favor, verifique e tente novamente!" << endl;
+        return 0;
+    }
 
     string strTemp, inputStringFile;
     string breakString = "\t";
@@ -35,6 +45,12 @@ int main()
     cout << "Arquivo 2 encerrado com sucesso" << endl;
 
     ifstream arquivoEntrada1("cep2.txt");                           //Abre arquivo para leitura
+
+    if(!arquivoEntrada1.is_open()){
+        cout << "Arquivo de entrada não encontrado. Por favor, verifique e tente novamente!" << endl << "Insira um arquivo com nome 'cep2.txt'" << endl;
+        return 0;
+    }
+
     int opcao, qtdResultados, qtdLinhas;
     string termoBusca, resultado;
     while(1){
