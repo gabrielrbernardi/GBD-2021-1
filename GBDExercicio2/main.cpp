@@ -13,19 +13,17 @@ struct item{
     char logradouro[67];
 };
 
-int sizeofchar(char *texto, int tamanho){
+char *padronizatamanhocampos(char *texto, int tamanho){
     int cont=0;
-    cout<<tamanho;
-    for(cont=0;cont<=tamanho;cont++){
-        if(texto[cont]=='\0')
-            break;
+    for(cont=0;cont<tamanho-1;cont++){
+        if(texto[cont]=='\0'){
+           texto[cont]=' ';
+           texto[cont+1]='\0';
+        }
     }
-    return cont*sizeof(char);
+    return texto;
 }
 
-void writespecialchar(char *especial, FILE *towrite){
-    fwrite(especial, sizeof(char) , 1 , towrite );
-}
 int main()
 {
     FILE *arquivoEntrada = fopen("cep3.txt", "r");
@@ -67,18 +65,15 @@ int main()
 
 // Linhas responsáveis por escrita no novo arquivo
         sprintf(cepescrita,"%d",item.cep); // transforma int em char;
-        fwrite(cepescrita      , sizeof(char) , sizeofchar(cepescrita,sizeof(cepescrita)) , arquivoSaida );
-        writespecialchar("\t", arquivoSaida);
-        fwrite(item.uf         , sizeof(char) , sizeofchar(item.uf,sizeof(item.uf)) , arquivoSaida );
-        writespecialchar("\t", arquivoSaida);
-        fwrite(item.cidade     , sizeof(char) , sizeofchar(item.cidade,sizeof(item.cidade)) , arquivoSaida );
-        writespecialchar("\t", arquivoSaida);
-        fwrite(item.logradouro , sizeof(char) , sizeofchar(item.logradouro,sizeof(item.logradouro)) , arquivoSaida );
-        writespecialchar("\n" , arquivoSaida);
+        fwrite(padronizatamanhocampos(cepescrita,sizeof(cepescrita))           , sizeof(char) , sizeof(cepescrita) , arquivoSaida );
+        fwrite(padronizatamanhocampos(item.uf,sizeof(item.uf))                 , sizeof(char) , sizeof(item.uf) , arquivoSaida );
+        fwrite(padronizatamanhocampos(item.cidade,sizeof(item.cidade))         , sizeof(char) , sizeof(item.cidade) , arquivoSaida );
+        fwrite(padronizatamanhocampos(item.logradouro,sizeof(item.logradouro)) , sizeof(char) , sizeof(item.logradouro) , arquivoSaida );
+        fwrite("\n", sizeof(char) , 1 , arquivoSaida );
 //        cout << item.cep << endl;
 //        cout << item.uf[1] << endl;
 //        cout << item.cidade << endl;
-//          cout << item.logradouro << endl;
+//        cout << item.logradouro << endl;
 //        cout << endl;
         teste.erase(0, teste.size());
     }
