@@ -13,9 +13,22 @@ struct item{
     char logradouro[67];
 };
 
+int sizeofchar(char *texto, int tamanho){
+    int cont=0;
+    cout<<tamanho;
+    for(cont=0;cont<=tamanho;cont++){
+        if(texto[cont]=='\0')
+            break;
+    }
+    return cont*sizeof(char);
+}
+
+void writespecialchar(char *especial, FILE *towrite){
+    fwrite(especial, sizeof(char) , 1 , towrite );
+}
 int main()
 {
-    FILE *arquivoEntrada = fopen("cep.txt", "r");
+    FILE *arquivoEntrada = fopen("cep3.txt", "r");
     FILE *arquivoSaida = fopen("cep2.txt", "w");
 
     string inputStringFile;
@@ -24,10 +37,11 @@ int main()
     struct item item;
     long long lSize;
     int qtdLinhas = 0;
+    char cepescrita[8];
 
     char c;
     string teste;
-    while(!feof(arquivoEntrada)){
+    while(1){
         while(fread(&c, sizeof(char), 1, arquivoEntrada) == 1 && c != '\n'){
             teste.push_back(c);
         };
@@ -37,7 +51,6 @@ int main()
             item.cep = stoi(cep);
         }catch(...){
             cout << "Foram lidas " << qtdLinhas << " linhas" << endl;
-            cout << "Falha na conversao" << endl;
             return 0;
         }
         teste.erase(0, teste.find("\t")+1);
@@ -51,13 +64,26 @@ int main()
         strcpy(item.logradouro, logradouro.c_str());
         teste.erase(0, teste.find("\t")+1);
         qtdLinhas++;
+
+// Linhas responsáveis por escrita no novo arquivo
+        sprintf(cepescrita,"%d",item.cep); // transforma int em char;
+        fwrite(cepescrita      , sizeof(char) , sizeofchar(cepescrita,sizeof(cepescrita)) , arquivoSaida );
+        writespecialchar("\t", arquivoSaida);
+        fwrite(item.uf         , sizeof(char) , sizeofchar(item.uf,sizeof(item.uf)) , arquivoSaida );
+        writespecialchar("\t", arquivoSaida);
+        fwrite(item.cidade     , sizeof(char) , sizeofchar(item.cidade,sizeof(item.cidade)) , arquivoSaida );
+        writespecialchar("\t", arquivoSaida);
+        fwrite(item.logradouro , sizeof(char) , sizeofchar(item.logradouro,sizeof(item.logradouro)) , arquivoSaida );
+        writespecialchar("\n" , arquivoSaida);
 //        cout << item.cep << endl;
-//        cout << item.uf << endl;
+//        cout << item.uf[1] << endl;
 //        cout << item.cidade << endl;
-//        cout << item.logradouro << endl;
+//          cout << item.logradouro << endl;
 //        cout << endl;
         teste.erase(0, teste.size());
     }
+    fclose(arquivoEntrada);
+    fclose(arquivoSaida);
 //    while(!feof(arquivoEntrada)){
 //        fread(pedro, 1, lSize, arquivoEntrada);
 //        cout << pedro << endl;
