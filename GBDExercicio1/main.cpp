@@ -1,6 +1,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+/********
+Integrantes do grupo
+Bruno Oliveira Sinhoroto - 11821BCC044
+Gabriel Ribeiro Bernardi - 11821BCC036
+Guilherme Soares Correa - 11821BCC026
+*********/
+
 void limpa(){
     setbuf(stdin, NULL);
 }
@@ -11,12 +18,12 @@ int main()
     ofstream arquivoSaida("cep2.txt");                               //Abre o arquivo para escrita
 
     if(!arquivoEntrada.is_open()){
-        cout << "Arquivo de entrada não encontrado. Por favor, verifique e tente novamente!" << endl << "Insira um arquivo com nome 'cep.txt'" << endl;
+        cout << "Arquivo de entrada nao encontrado. Por favor, verifique e tente novamente!" << endl << "Insira um arquivo com nome 'cep.txt'" << endl;
         return 0;
     }
 
     if(!arquivoSaida.is_open()){
-        cout << "Não foi possível abrir o arquivo de saida. Por favor, verifique e tente novamente!" << endl;
+        cout << "Nao foi possivel abrir o arquivo de saida. Por favor, verifique e tente novamente!" << endl;
         return 0;
     }
 
@@ -38,7 +45,7 @@ int main()
         arquivoSaida << inputStringFile << endl;                    //Escrita da string no arquivo de saida
         inputStringFile = "";
     }
-    //Fecha arquivos de entrada e saída
+    //Fecha arquivos de entrada e saï¿½da
     arquivoSaida.close();
     cout << "Arquivo 1 encerrado com sucesso" << endl;
     arquivoEntrada.close();
@@ -47,7 +54,7 @@ int main()
     ifstream arquivoEntrada1("cep2.txt");                           //Abre arquivo para leitura
 
     if(!arquivoEntrada1.is_open()){
-        cout << "Arquivo de entrada não encontrado. Por favor, verifique e tente novamente!" << endl << "Insira um arquivo com nome 'cep2.txt'" << endl;
+        cout << "Arquivo de entrada nï¿½o encontrado. Por favor, verifique e tente novamente!" << endl << "Insira um arquivo com nome 'cep2.txt'" << endl;
         return 0;
     }
 
