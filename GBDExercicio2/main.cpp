@@ -24,6 +24,39 @@ char *padronizatamanhocampos(char *texto, int tamanho){
     return texto;
 }
 
+int separaStringDados(string dados, struct item *item){
+    string cep, uf, cidade, logradouro;
+    cep = dados.substr(0, dados.find("\t"));
+    dados.erase(0, dados.find("\t")+1);
+    uf = dados.substr(0, dados.find("\t"));
+    strcpy(item->uf, uf.c_str());
+    dados.erase(0, dados.find("\t")+1);
+    cidade = dados.substr(0, dados.find("\t"));
+    strcpy(item->cidade, cidade.c_str());
+    dados.erase(0, dados.find("\t")+1);
+    logradouro = dados.substr(0, dados.find("\t"));
+    strcpy(item->logradouro, logradouro.c_str());
+    dados.erase(0, dados.find("\t")+1);
+    return((item->cidade[0] == '\0') ? 1 : 0);
+}
+
+void finaliza(FILE *arquivoEntrada,FILE *arquivoSaida){
+    fclose(arquivoEntrada);
+    fclose(arquivoSaida);
+}
+
+//void pesquisa()
+//{
+//    while(1){
+//        while(fread(&c, sizeof(char), 1, arquivoEntrada) == 1 && c != '\n'){
+//            dados.push_back(c);
+//        }
+//        if (separaStringDados(dados, &item)){
+//           finaliza(arquivoEntrada,arquivoSaida);
+//           return 0;}
+//           }
+//}
+
 int main()
 {
     FILE *arquivoEntrada = fopen("cep3.txt", "r");
@@ -38,47 +71,42 @@ int main()
     char cepescrita[8];
 
     char c;
-    string teste;
-    while(1){
-        while(fread(&c, sizeof(char), 1, arquivoEntrada) == 1 && c != '\n'){
-            teste.push_back(c);
-        };
-        string cep, uf, cidade, logradouro;
-        cep = teste.substr(0, teste.find("\t"));
-        try{
-            item.cep = stoi(cep);
-        }catch(...){
-            cout << "Foram lidas " << qtdLinhas << " linhas" << endl;
-            return 0;
-        }
-        teste.erase(0, teste.find("\t")+1);
-        uf = teste.substr(0, teste.find("\t"));
-        strcpy(item.uf, uf.c_str());
-        teste.erase(0, teste.find("\t")+1);
-        cidade = teste.substr(0, teste.find("\t"));
-        strcpy(item.cidade, cidade.c_str());
-        teste.erase(0, teste.find("\t")+1);
-        logradouro = teste.substr(0, teste.find("\t"));
-        strcpy(item.logradouro, logradouro.c_str());
-        teste.erase(0, teste.find("\t")+1);
-        qtdLinhas++;
-
-// Linhas responsáveis por escrita no novo arquivo
-        sprintf(cepescrita,"%d",item.cep); // transforma int em char;
-        fwrite(padronizatamanhocampos(cepescrita,sizeof(cepescrita))           , sizeof(char) , sizeof(cepescrita) , arquivoSaida );
-        fwrite(padronizatamanhocampos(item.uf,sizeof(item.uf))                 , sizeof(char) , sizeof(item.uf) , arquivoSaida );
-        fwrite(padronizatamanhocampos(item.cidade,sizeof(item.cidade))         , sizeof(char) , sizeof(item.cidade) , arquivoSaida );
-        fwrite(padronizatamanhocampos(item.logradouro,sizeof(item.logradouro)) , sizeof(char) , sizeof(item.logradouro) , arquivoSaida );
-        fwrite("\n", sizeof(char) , 1 , arquivoSaida );
-//        cout << item.cep << endl;
-//        cout << item.uf[1] << endl;
-//        cout << item.cidade << endl;
-//        cout << item.logradouro << endl;
-//        cout << endl;
-        teste.erase(0, teste.size());
-    }
-    fclose(arquivoEntrada);
-    fclose(arquivoSaida);
+    string dados;
+    // escrita no novo arquivo
+    if (1){
+        while(1){
+            while(fread(&c, sizeof(char), 1, arquivoEntrada) == 1 && c != '\n'){
+                dados.push_back(c);
+            };
+            if (separaStringDados(dados, &item)){
+               cout << "Foram lidas " << qtdLinhas << " linhas" << endl;
+               finaliza(arquivoEntrada,arquivoSaida);
+               return 0;}
+            qtdLinhas++;
+            sprintf(cepescrita,"%d",item.cep); // transforma int em char;
+            fwrite(padronizatamanhocampos(cepescrita,sizeof(cepescrita))           , sizeof(char) , sizeof(cepescrita) , arquivoSaida );
+            fwrite(padronizatamanhocampos(item.uf,sizeof(item.uf))                 , sizeof(char) , sizeof(item.uf) , arquivoSaida );
+            fwrite(padronizatamanhocampos(item.cidade,sizeof(item.cidade))         , sizeof(char) , sizeof(item.cidade) , arquivoSaida );
+            fwrite(padronizatamanhocampos(item.logradouro,sizeof(item.logradouro)) , sizeof(char) , sizeof(item.logradouro) , arquivoSaida );
+            fwrite("\n", sizeof(char) , 1 , arquivoSaida );
+            dados.erase(0, dados.size());
+        }}
+    else{
+        // busca sequencial no arquivo criado
+//        while(1){
+//            cout << "1 - Busca por Rua\n2 - Busca por Cidade\n3 - Busca por UF\n4 - Busca por CEP\n5 - Sair" << endl;
+//            cout << "Digite uma opcao: ";
+//            scanf("%d", &opcao);
+//            if(opcao == 5){                                             //Opcao para encerra aplicacao
+//                break;
+//            }
+//            cout << "Qual termo deseja buscar: ";
+//            limpa();                                                    //Limpa o buffer do teclado para a leitura da string de busca
+//            getline (cin, termoBusca);
+//            cout << termoBusca << endl;
+//            limpa();
+//            }}
+}
 //    while(!feof(arquivoEntrada)){
 //        fread(pedro, 1, lSize, arquivoEntrada);
 //        cout << pedro << endl;
