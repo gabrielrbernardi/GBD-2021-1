@@ -32,7 +32,7 @@ public:
 
         char *str;
         if(strlen(palavra) + 1 < 8) {
-            str = (char*) malloc(8);  //Alocando tamanho da string
+            str = (char*) malloc(8);  //Alocando tamanho da palavra a ser inserida
             strcpy(str, palavra);     //Copia valor string palavra para str
         }else{
             str = palavra;
