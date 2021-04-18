@@ -1,6 +1,9 @@
 /*
- * File:   main.cpp
- * Author: seunome
+ * File:        main.cpp
+ * Author:      Gabriel Ribeiro Bernardi - 11821BCC036
+ *              Guilherme Soares Correa - 11821BCC026
+ *              Bruno Oliveira Sinhoroto - 11821BCC044
+ * Observacao:  Foram retirados os acentos das strings a serem impressas nos printfs e dos comentarios para uma melhor formatacao do texto.
  */
 
 #include <bits/stdc++.h>
@@ -11,7 +14,7 @@ class MeuArquivo {
 public:
     struct cabecalho { int quantidade; int disponivel = -1; } cabecalho;
     struct registro { int quantidade; int disponivel; } registro;
-    typedef struct removeRegistro { int tamanho; int prox; } removeRegistro;
+    typedef struct removeRegistro { int prox; int tamanho; } removeRegistro;
 
     // construtor: abre arquivo. Essa aplicacao deveria ler o arquivo se existente ou criar um novo.
     // Entretando recriaremos o arquivo a cada execucao ("w+").
@@ -30,23 +33,26 @@ public:
     void inserePalavra(char *palavra) {
         this->substituiBarraNporBarraZero(palavra); // funcao auxiliar substitui terminador por \0
 
-        char *str;
+        /* Para garantir melhor organizacao e manipulacao, garante-se que a string tenha pelo menos 8 bytes disponíveis.
+           Se tiver menos de 8 bytes, faz-se a alocacao do espaço, caso contrário mantem-se o tamanho original da string
+         */
+        char *stringAlocada;
         if(strlen(palavra) + 1 < 8) {
-            str = (char*) malloc(8);  //Alocando tamanho da palavra a ser inserida
-            strcpy(str, palavra);     //Copia valor string palavra para str
+            stringAlocada = (char*) malloc(8);  //Alocando tamanho da palavra a ser inserida
+            strcpy(stringAlocada, palavra);     //Copia valor string palavra para str
         }else{
-            str = palavra;
+            stringAlocada = palavra;
         }
-        palavra = str;
+        palavra = stringAlocada;
 
-        if(inserePalavra1(palavra) == 0) {
+        if(inserePalavra1(palavra) == 0) {  //Se retornar 0, palavra nao foi inserida no decorrer do dicionario e devera ser inserida no final.
             fseek(fd, 0, SEEK_END);
-
             //Insere palavra ao final do arquivo caso nao seja possivel insercao no decorrer do dicionario
-            int offset = ftell(fd);
+//            int offset = ftell(fd);
             int tamanhoPalavra = strlen(palavra);
             int tamanho = max(int(sizeof(removeRegistro) - sizeof(int)), tamanhoPalavra + 1);
 
+            //Tenta-se escrever o tamanho da palavra e a palavra no final do dicionario
             if(fwrite(&tamanho, sizeof(int), 1, fd) != 1) {
                 cout << "Nao foi possivel escrever o tamanho da palavra no final." << endl;
             }
@@ -54,28 +60,29 @@ public:
                 cout << "Nao foi possivel escrever a palavra no final." << endl;
             }
             fflush(fd);
-
-//            printf("Palavra inserida com sucesso.\n");
         }
         atualizaCabecalho(1);
     }
 
+    //Funcao para fazer a inserção da palavra ao decorrer do dicionario
     int inserePalavra1(char *palavra){
-        int tamanhoPalavra = strlen(palavra)+1; // considerando \0
-        int desloc = cabecalho.disponivel, anterior = 0;
-        fseek(fd, 0, SEEK_SET);
+        int tamanhoPalavra = strlen(palavra) + 1; // considerando \0
+        int desloc = cabecalho.disponivel;
+        int anterior = 0;
+
+        fseek(fd, 0, SEEK_SET); //configura o ponteiro da stram para a posicao 0, ou seja, o inicio do arquivo
 
         while(desloc != -1){
             cout << "Desloc: " << desloc << endl;
             fseek(fd, desloc - ftell(fd), SEEK_CUR);
 
             removeRegistro remRegistro;
-            fread(&remRegistro, sizeof(removeRegistro), 1, fd);
+            fread(&remRegistro, sizeof(removeRegistro), 1, fd); //Faz-se a leitura do conteudo do registro
 
             if(remRegistro.tamanho >= tamanhoPalavra){
                 //volta ponteiro do arquivo para o inicio do registro, desconsiderando o int do tamanho do registro
                 fseek(fd, -(sizeof(removeRegistro) - sizeof(int)), SEEK_CUR);
-                if(fwrite(palavra, sizeof(char), tamanhoPalavra, fd) != tamanhoPalavra) {
+                if(fwrite(palavra, sizeof(char), tamanhoPalavra, fd) != tamanhoPalavra) { //Se espaco disponivel for menor que tamanho da string, nao insere no decorrer do dicionario
                     cout << "Nao foi possivel escrever a palavra: " << palavra << endl;
                 }
                 fflush(fd);
@@ -89,7 +96,7 @@ public:
             cout << "A palavra foi inserida!" << endl;
             return 1;
         }
-        return 0;
+        return 0;   //Palavra nao inserida
     }
 
     void proximoOffset(int desloc, int proxDesloc) {
@@ -119,7 +126,7 @@ public:
     void removePalavra(int offset) {
         fseek(fd, 0, SEEK_END);
         int tamanhoArquivo = ftell(fd);
-        if(!cabecalho.quantidade || tamanhoArquivo <= offset){
+        if(!cabecalho.quantidade || tamanhoArquivo <= offset){  //Verifica se ha espacos ocupados no dicionario, se nao houver conteudo, nao ha como remover a palavra solicitada
             cout << "Nao foi possivel remover a palavra." << endl;
             return; //Para a execucao da funcao
         }else{
@@ -145,6 +152,7 @@ public:
         this->substituiBarraNporBarraZero(palavra); // funcao auxiliar substitui terminador por \0
 
         char str[75];
+        int tamanhoPalavra;
         int posicao = sizeof(cabecalho);
 
         fseek(fd, 0, SEEK_END);
@@ -153,13 +161,12 @@ public:
         fseek(fd, posicao, SEEK_SET);
 
         while(posicao < finalArquivo) {
-            int tamanhoPalavra;
             fread(&tamanhoPalavra, sizeof(int), 1, fd);
             fread(str, sizeof(char), tamanhoPalavra, fd);
             this -> substituiBarraNporBarraZero(str);
 
             if(str[0] == '*') {
-                continue;       //Ignora a string encontrada por ser considerada vazia para a busca
+                continue;       //Ignora a string encontrada, por ser considerada vazia para a busca
             }else{
                 if(!strcmp(str, palavra)) {     //Verifica se string string atual eh igual a string que deseja-se buscar
                     cout << "A palavra " << palavra << " foi encontrada" << endl;
