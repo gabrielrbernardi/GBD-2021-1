@@ -215,7 +215,7 @@ int main(int argc, char** argv) {
 
     char opcao;
     do {
-        printf("\n\n1-Insere\n2-Remove\n3-Busca\n4-Sair\nOpcao:");
+        printf("\n\n1-Insere\n2-Remove\n3-Busca\n4-Sair\nOpcao: ");
         opcao = getchar();
         if (opcao == '1') {
             printf("Palavra: ");
